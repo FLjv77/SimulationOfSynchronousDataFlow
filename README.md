@@ -4,7 +4,7 @@ This project which is
 Graphic implementation of SDF ( synchronous data flow) simulation which is used in computing and communications, to optimise data transfer traffic management was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.0.
 
 ## Project output
-![sdfPanel](./)
+![sdfPanel](https://raw.githubusercontent.com/FLjv77/SimulationOfSynchronousDataFlow/master/src/assets/image/sdfOutput.png)
 
 ## Development server
 
