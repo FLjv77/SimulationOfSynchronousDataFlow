@@ -1,0 +1,240 @@
+<mat-progress-bar mode="indeterminate" *ngIf="repit > 0"></mat-progress-bar>
+<mat-progress-bar mode="indeterminate" *ngIf="repit > 0"></mat-progress-bar>
+
+<div class="px-4">
+
+    <div class="white-bord">
+        <div class="container-board">
+            <table class="table" *ngIf="actorList.length > 0">
+                <thead>
+                  <tr>
+                    <th *ngFor="let node of actorList" scope="col">{{node.name}}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of topologyMatrix">
+                    <td *ngFor="let item of row">{{item}}</td>
+                  </tr>
+                </tbody>
+            </table>
+
+              <hr class="my-2">
+
+              Fire Vector
+              <span>[</span>
+            <div class="d-inline" *ngFor="let item of fireRow">
+               
+                {{item}}
+
+            </div>
+            <span>]</span>
+
+        </div>
+    </div>
+  
+  
+    <div class="menu">
+
+        <h2 class="title mt-2">
+            Menu
+        </h2>
+
+        <div (click)="addNewActor()">
+            <img class="icon" src="../../../assets/image/nodes.svg">
+            <div class="title">
+                Actor
+            </div>
+        </div>
+
+
+        <div (click)="addNewEdge()">
+            <img class="icon1" src="../../../assets/image/lunar-node.svg">
+            <div class="title">
+                Edge
+            </div>
+        </div>
+
+
+        <div (click)="siwtchEdgeActor('clock')"    
+            data-toggle="modal"
+            data-target=".bd-example-modal-lg">
+            <img class="icon1" src="../../../assets/image/stopwatch.svg">
+            <div class="title">
+                Timer
+            </div>
+        </div>
+
+        <div (click)="reseRepite()">
+            <img class="icon1" src="../../../assets/image/video-pause-button.svg">
+            <div class="title">
+                Reset
+            </div>
+        </div>
+
+        <div (click)="cycleSdf()">
+            <img class="icon1" src="../../../assets/image/video-play-button.svg">
+            <div class="title">
+                Play
+            </div>
+        </div>
+    </div>
+
+
+    <div class="float-right d-inline mt-4" style="margin-right: 320px;">
+        <div *ngFor="let node of actorList;  let i = index" cdkDrag class="node-container">
+         <div class="node py-1">
+             <div *ngIf="node.name">
+                {{node.name}}
+             </div>
+
+             <div *ngIf="!node.name">
+                Name
+             </div>
+         
+             <div class="title">{{node.deley}}</div>
+         </div>
+         <img class="seting-node" data-toggle="modal" 
+                data-target=".bd-example-modal-lg"
+                (click)="setSelectedActorIndex(i)"
+                 src="../../../assets/image/gear1.png">
+        </div>
+
+
+       
+
+
+        <div *ngFor="let edge of edgeList; let i = index" class="position-relative move" cdkDrag>
+            <div class="edge" [ngStyle]="{'transform':  'rotate(' + edge.angle +'deg)'}">
+
+                <div class="ml-1 mt-2">
+                    {{edge.endToken}}
+                </div>
+             
+
+                <img class="routate-icon ml-2"
+                    (click)="routateEdge(i)"
+                    src="../../../assets/image/update-arrow.svg">
+
+                <img class="ml-2 seting-icon-edge mt-1"
+                    (click)="setSelectedEdgeIndex(i)"
+                    data-toggle="modal"
+                    data-target=".bd-example-modal-lg"
+                    src="../../../assets/image/gear1.png">
+                    
+                <img class="ml-2 seting-icon-edge mt-1"
+                    src="../../../assets/image/add.svg">
+
+                <img class="ml-2 seting-icon-edge mt-1"
+                    (click)="deroutateEdge(i)"
+                    src="../../../assets/image/de.svg">
+
+                    <div class="token" *ngFor="let item of getListByLenght(tokenRow[i])"></div>
+
+                    <div class="ml-1" style="margin-top: 28px;">
+                        {{edge.startToken}}
+                    </div>
+                   
+
+
+            </div>
+        </div>
+    </div>    
+    
+
+   
+</div>
+
+
+
+<div *ngIf="actorList.length > 0 && modal == 'actor'" class="modal fade bd-example-modal-lg"
+     tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content container">
+        <div class="form-group row pt-4">
+            <label class="col-sm-2 col-form-label">Name</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control"
+               [(ngModel)]="actorList[selectedNodeIndex].name"
+                placeholder="Enter actor name">
+            </div>
+        </div>
+        <div class="form-group row mt-2">
+            <label class="col-sm-2 col-form-label">Delay</label>
+            <div class="col-sm-10">
+              <input type="number" class="form-control"
+               [(ngModel)]="actorList[selectedNodeIndex].deley"
+               placeholder="Enter actor delay">
+            </div>
+        </div>
+
+        <button data-dismiss="modal" class="w-100 btn-primary btn mt-4 mb-2">
+            Submit
+        </button>
+
+    </div>
+  </div>
+</div>
+
+<div *ngIf="edgeList.length > 0 && modal == 'edge'" class="modal fade bd-example-modal-lg"
+    tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+ <div class="modal-dialog modal-lg">
+   <div class="modal-content container">
+       <div class="form-group row pt-4">
+           <label class="col-sm-2 col-form-label">Token</label>
+           <div class="col-sm-10">
+             <input type="number" class="form-control"
+              [(ngModel)]="tokenRow[selectedEdgeIndex]"
+               placeholder="Enter number of token">
+           </div>
+       </div>
+        
+    <div class="row">
+        <div *ngFor="let actor of actorList; let t = index" class="col-4">
+            <div class="input-group mb-2 input-group-sm">
+              <div class="input-group-prepend">
+                <div class="input-group-text">{{actor.name}}</div>
+              </div>
+              <input type="number" class="form-control"  [(ngModel)]="topologyMatrix[selectedEdgeIndex][t]"
+              id="inlineFormInputGroup" placeholder="Matrix element">
+            </div>
+          </div>
+    </div>
+       <button (click)="setIndexForEdge(selectedEdgeIndex)" data-dismiss="modal" class="w-100 btn-primary btn mt-4 mb-2">
+           Submit
+       </button>
+   </div>
+ </div>
+</div>
+
+<div *ngIf="modal == 'clock'" class="modal fade bd-example-modal-lg"
+    tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+ <div class="modal-dialog modal-lg">
+   <div class="modal-content container">
+       <div class="form-group row pt-4">
+           <label class="col-sm-2 col-form-label">Clock</label>
+           <div class="col-sm-10">
+             <input type="number" class="form-control"
+              [(ngModel)]="clockDuration"
+               placeholder="Enter amuont of clock (ms)">
+           </div>
+       </div>
+
+
+       <div class="form-group row pt-4">
+        <label class="col-sm-2 col-form-label">Number of clock</label>
+        <div class="col-sm-10">
+          <input type="number" class="form-control"
+           [(ngModel)]="repit"
+            placeholder="Enter Number repetiton of clock">
+        </div>
+    </div>
+
+
+       <button data-dismiss="modal" class="w-100 btn-primary btn mt-4 mb-2">
+           Submit
+       </button>
+   </div>
+ </div>
+</div>
+
+
